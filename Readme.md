@@ -11,7 +11,7 @@
 **Proje Tanımı:** 
 > Siber dünya hakkında her şey.
 
-***CyberInf, kullanıcıların siber güvenlik alanında blog yazıları okuyabileceği, beğenebileceği ve yorum yapabileceği modern bir web platformudur. Platform; bilgi paylaşımını teşvik eden, kullanıcı etkileşimini artıran ve siber güvenlik farkındalığını yaymayı amaçlayan topluluk tabanlı bir yapıya sahiptir. Kullanıcılar sisteme kayıt olup giriş yaparak içerikleri görüntüleyebilir, beğeni bırakabilir ve yorum yapabilirler. Güvenli kimlik doğrulama sistemi ve modern arayüz tasarımı ile hem güvenli hem de kullanıcı dostu bir deneyim sunar.***
+***CyberInf, kullanıcıların siber güvenlik alanında blog yazıları okuyabileceği, beğenebileceği ve yorum yapabileceği modern bir web platformudur. Platform; bilgi paylaşımını teşvik eden, kullanıcı etkileşimini artıran ve siber güvenlik farkındalığını yaymayı amaçlayan topluluk tabanlı bir yapıya sahiptir. Kullanıcılar sisteme kayıt olup giriş yaparak içerikleri görüntüleyebilir, beğeni bırakabilir ve yorum yapabilirler.Güvenlikle ilgili bilgileri kategorize ederek daha kullanışlı bir hizmet sunar. Güvenli kimlik doğrulama sistemi ve modern arayüz tasarımı ile hem güvenli hem de kullanıcı dostu bir deneyim sunar.***
 
 **Proje Kategorisi:** 
 > Sosyal Medya / Blog Platformu / Siber Güvenlik
