@@ -15,321 +15,376 @@ info:
     
     ## Özellikler
     - Kullanıcı yönetimi
-    - Ürün katalog yönetimi
-    - Sipariş işlemleri
+    - Blog yazısı yönetimi
+    - Yorum işlemleri
     - JWT tabanlı kimlik doğrulama
   version: 1.0.0
   contact:
     name: API Destek Ekibi
-    email: api-support@yazmuh.com
-    url: https://api.yazmuh.com/support
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
-
+    email: api-support@cyberımf.com
+    url: https://api.cyberınf.com/support
+ 
 servers:
-  - url: https://api.yazmuh.com/v1
+  - url: https://api.cyberınf.com/v1
     description: Production server
-  - url: https://staging-api.yazmuh.com/v1
+  - url: https://staging-api.cyberınf.com/v1
     description: Staging server
   - url: http://localhost:3000/v1
     description: Development server
 
 tags:
-  - name: users
-    description: Kullanıcı yönetimi işlemleri
-  - name: products
-    description: Ürün katalog işlemleri
-  - name: orders
-    description: Sipariş işlemleri
-  - name: auth
-    description: Kimlik doğrulama işlemleri
+  - name: Authentication
+    description: Kullanıcı kimlik doğrulama işlemleri
+  - name: Users
+    description: Kullanıcı işlemleri
+  - name: Blogs
+    description: Blog yazısı işlemleri
+  - name: Comments
+    description: Yorum işlemleri
+  - name: Categories
+    description: Blog kategorileri işlemleri
 
 paths:
+
   /auth/register:
     post:
       tags:
-        - auth
-      summary: Yeni kullanıcı kaydı
-      description: Sisteme yeni bir kullanıcı kaydeder
-      operationId: registerUser
+        - Authentication
+      summary: Kullanıcı Kaydı
+      description: Yeni kullanıcı oluşturur
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRegistration'
-            examples:
-              example1:
-                summary: Örnek kullanıcı kaydı
-                value:
-                  email: kullanici@example.com
-                  password: Guvenli123!
-                  firstName: Ahmet
-                  lastName: Yılmaz
+              $ref: '#/components/schemas/RegisterInput'
       responses:
-        '201':
+        "201":
           description: Kullanıcı başarıyla oluşturuldu
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '409':
-          description: Email adresi zaten kullanımda
+        "400":
+          description: Geçersiz istek verisi
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
 
+        "409":
+          description: Email zaten kayıtlı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
   /auth/login:
     post:
       tags:
-        - auth
-      summary: Kullanıcı girişi
-      description: Email ve şifre ile giriş yapar, JWT token döner
-      operationId: loginUser
+        - Authentication
+      summary: Kullanıcı Girişi
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginCredentials'
+              $ref: '#/components/schemas/LoginInput'
       responses:
-        '200':
-          description: Giriş başarılı
+        "200":
+          description: Başarılı giriş
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthToken'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: '#/components/schemas/AuthResponse'
 
-  /users:
-    get:
-      tags:
-        - users
-      summary: Kullanıcı listesi
-      description: Sistemdeki tüm kullanıcıları listeler (sayfalama ile)
-      operationId: listUsers
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
-        - name: role
-          in: query
-          description: Kullanıcı rolüne göre filtrele
-          schema:
-            type: string
-            enum: [admin, user, guest]
-      responses:
-        '200':
-          description: Başarılı
+         "400":
+          description: Eksik veya hatalı veri
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserList'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: '#/components/schemas/Error'
+
+        "401":
+          description: Email veya şifre hatalı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/password-reset:
+    post:
+      tags:
+        - Authentication
+      summary: Şifre sıfırlama isteği
+      responses:
+        "200":
+          description: Şifre sıfırlama maili gönderildi
+
+  /auth/password-reset/confirm:
+    post:
+      tags:
+        - Authentication
+      summary: Yeni şifre belirleme
+      responses:
+        "200":
+          description: Şifre başarıyla güncellendi
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Çıkış yapma
+      responses:
+        "200":
+          description: Kullanıcı çıkış yaptı
+
 
   /users/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+
     get:
       tags:
-        - users
-      summary: Kullanıcı detayı
-      description: Belirli bir kullanıcının detay bilgilerini getirir
-      operationId: getUserById
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/UserIdParam'
+        - Users
+      summary: Profil görüntüleme
       responses:
-        '200':
-          description: Başarılı
+        "200":
+          description: Kullanıcı bilgileri
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    
+
     put:
       tags:
-        - users
-      summary: Kullanıcı güncelle
-      description: Kullanıcı bilgilerini günceller
-      operationId: updateUser
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/UserIdParam'
+        - Users
+      summary: Profil güncelleme
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdate'
+              $ref: '#/components/schemas/UserUpdateInput'
       responses:
-        '200':
-          description: Kullanıcı başarıyla güncellendi
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    
+        "200":
+          description: Profil güncellendi
+
     delete:
       tags:
-        - users
-      summary: Kullanıcı sil
-      description: Kullanıcıyı sistemden siler
-      operationId: deleteUser
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/UserIdParam'
+        - Users
+      summary: Hesap silme
       responses:
-        '204':
-          description: Kullanıcı başarıyla silindi
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
+        "204":
+          description: Kullanıcı silindi
 
-  /products:
+
+  /users/{userId}/blogs:
     get:
       tags:
-        - products
-      summary: Ürün listesi
-      description: Tüm ürünleri listeler
-      operationId: listProducts
+        - Users
+      summary: Kullanıcının bloglarını listeleme
+      responses:
+        "200":
+          description: Blog listesi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Blog'
+
+
+  /blogs:
+    post:
+      tags:
+        - Blogs
+      summary: Blog yazısı ekleme
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogInput'
+      responses:
+        "201":
+          description: Blog oluşturuldu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blog'
+
+
+  /blogs/{blogId}:
+    parameters:
+      - name: blogId
+        in: path
+        required: true
+        schema:
+          type: string
+
+    put:
+      tags:
+        - Blogs
+      summary: Blog düzenleme
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogInput'
+      responses:
+        "200":
+          description: Blog güncellendi
+
+    delete:
+      tags:
+        - Blogs
+      summary: Blog silme
+      responses:
+        "204":
+          description: Blog silindi
+        "401":
+          description: Kimlik doğrulama başarısız
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        "403":
+          description: Bu blogu silme yetkiniz yok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        "404":
+          description: Blog bulunamadı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+  /blogs/{blogId}/comments:
+    parameters:
+      - name: blogId
+        in: path
+        required: true
+        schema:
+          type: string
+
+    post:
+      tags:
+        - Comments
+      summary: Bloga yorum ekleme
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentInput'
+      responses:
+        "201":
+          description: Yorum eklendi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+
+
+  /comments:
+    get:
+      tags:
+        - Comments
+      summary: Onay bekleyen yorumları listele
       parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
-        - name: category
+        - name: status
           in: query
-          description: Kategoriye göre filtrele
+          required: true
           schema:
             type: string
-        - name: minPrice
-          in: query
-          description: Minimum fiyat
-          schema:
-            type: number
-            format: float
-        - name: maxPrice
-          in: query
-          description: Maximum fiyat
-          schema:
-            type: number
-            format: float
+            example: pending
       responses:
-        '200':
-          description: Başarılı
+        "200":
+          description: Yorum listesi
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductList'
-    
-    post:
-      tags:
-        - products
-      summary: Yeni ürün ekle
-      description: Sisteme yeni bir ürün ekler
-      operationId: createProduct
-      security:
-        - bearerAuth: []
-      requestBody:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+
+
+  /comments/{commentId}:
+    parameters:
+      - name: commentId
+        in: path
         required: true
+        schema:
+          type: string
+
+    put:
+      tags:
+        - Comments
+      summary: Yorum güncelleme
+      requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductCreate'
+              $ref: '#/components/schemas/CommentInput'
       responses:
-        '201':
-          description: Ürün başarıyla oluşturuldu
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Product'
-        '400':
-          $ref: '#/components/responses/BadRequest'
+        "200":
+          description: Yorum güncellendi
 
-  /products/{productId}:
+    delete:
+      tags:
+        - Comments
+      summary: Yorum silme
+      responses:
+        "204":
+          description: Yorum silindi
+
+
+  /categories:
     get:
       tags:
-        - products
-      summary: Ürün detayı
-      description: Belirli bir ürünün detay bilgilerini getirir
-      operationId: getProductById
-      parameters:
-        - $ref: '#/components/parameters/ProductIdParam'
+        - Categories
+      summary: Kategori listeleme
       responses:
-        '200':
-          description: Başarılı
+        "200":
+          description: Kategori listesi
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Product'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
 
-  /orders:
-    get:
-      tags:
-        - orders
-      summary: Sipariş listesi
-      description: Kullanıcının siparişlerini listeler
-      operationId: listOrders
-      security:
-        - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
-      responses:
-        '200':
-          description: Başarılı
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OrderList'
-    
-    post:
-      tags:
-        - orders
-      summary: Yeni sipariş oluştur
-      description: Yeni bir sipariş oluşturur
-      operationId: createOrder
-      security:
-        - bearerAuth: []
-      requestBody:
+
+  /categories/{categoryId}/blogs:
+    parameters:
+      - name: categoryId
+        in: path
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OrderCreate'
+        schema:
+          type: string
+
+    get:
+      tags:
+        - Categories
+      summary: Kategoriye ait blogları getir
       responses:
-        '201':
-          description: Sipariş başarıyla oluşturuldu
+        "200":
+          description: Blog listesi
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Order'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Blog'
 
 components:
   securitySchemes:
@@ -378,354 +433,123 @@ components:
         default: 20
 
   schemas:
-    User:
+     RegisterInput:
       type: object
-      required:
-        - id
-        - email
-        - firstName
-        - lastName
-        - role
-        - createdAt
       properties:
-        id:
+        name:
           type: string
-          format: uuid
-          description: Kullanıcı benzersiz kimliği
-          example: "123e4567-e89b-12d3-a456-426614174000"
         email:
           type: string
-          format: email
-          description: Kullanıcı email adresi
-          example: "kullanici@example.com"
-        firstName:
+        password:
           type: string
-          description: Ad
-          example: "Ahmet"
-        lastName:
-          type: string
-          description: Soyad
-          example: "Yılmaz"
-        role:
-          type: string
-          enum: [admin, user, guest]
-          description: Kullanıcı rolü
-          example: "user"
-        createdAt:
-          type: string
-          format: date-time
-          description: Oluşturulma tarihi
-          example: "2024-01-15T10:30:00Z"
-        updatedAt:
-          type: string
-          format: date-time
-          description: Güncellenme tarihi
-          example: "2024-01-20T14:45:00Z"
-        phone:
-          type: string
-          description: Telefon numarası
-          example: "+905551234567"
+      required:
+        - name
+        - email
+        - password
 
-    UserRegistration:
+    LoginInput:
       type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
       required:
         - email
         - password
-        - firstName
-        - lastName
-      properties:
-        email:
-          type: string
-          format: email
-          example: "kullanici@example.com"
-        password:
-          type: string
-          format: password
-          minLength: 8
-          example: "Guvenli123!"
-        firstName:
-          type: string
-          minLength: 2
-          example: "Ahmet"
-        lastName:
-          type: string
-          minLength: 2
-          example: "Yılmaz"
 
-    UserUpdate:
+    AuthResponse:
       type: object
-      properties:
-        firstName:
-          type: string
-          minLength: 2
-          example: "Ahmet"
-        lastName:
-          type: string
-          minLength: 2
-          example: "Yılmaz"
-        email:
-          type: string
-          format: email
-          example: "yeniemail@example.com"
-        phone:
-          type: string
-          description: Telefon numarası
-          example: "+905551234567"
-
-    LoginCredentials:
-      type: object
-      required:
-        - email
-        - password
-      properties:
-        email:
-          type: string
-          format: email
-          example: "kullanici@example.com"
-        password:
-          type: string
-          format: password
-          example: "Guvenli123!"
-
-    AuthToken:
-      type: object
-      required:
-        - token
-        - expiresIn
-        - user
       properties:
         token:
           type: string
-          description: JWT access token
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        expiresIn:
-          type: integer
-          description: Token geçerlilik süresi (saniye)
-          example: 3600
-        user:
-          $ref: '#/components/schemas/User'
 
-    Product:
+    User:
       type: object
-      required:
-        - id
-        - name
-        - price
-        - category
-        - stock
       properties:
         id:
           type: string
-          format: uuid
-          example: "987e6543-e21b-12d3-a456-426614174000"
         name:
           type: string
-          description: Ürün adı
-          example: "Laptop"
-        description:
+        email:
           type: string
-          description: Ürün açıklaması
-          example: "15.6 inç, 16GB RAM, 512GB SSD"
-        price:
-          type: number
-          format: float
-          description: Ürün fiyatı (TL)
-          example: 25999.99
-        category:
+        phone:
           type: string
-          description: Ürün kategorisi
-          example: "Elektronik"
-        stock:
-          type: integer
-          description: Stok miktarı
-          example: 50
-        imageUrl:
+
+    UserUpdateInput:
+      type: object
+      properties:
+        name:
           type: string
-          format: uri
-          description: Ürün görseli URL'i
-          example: "https://example.com/images/laptop.jpg"
+        email:
+          type: string
+        phone:
+          type: string
+
+    Blog:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        author:
+          type: string
+        categoryId:
+          type: string
         createdAt:
           type: string
           format: date-time
-        updatedAt:
-          type: string
-          format: date-time
 
-    ProductCreate:
+    BlogInput:
       type: object
-      required:
-        - name
-        - price
-        - category
-        - stock
       properties:
-        name:
+        title:
           type: string
-          minLength: 3
-        description:
+        content:
           type: string
-        price:
-          type: number
-          format: float
-          minimum: 0
-        category:
+        categoryId:
           type: string
-        stock:
-          type: integer
-          minimum: 0
-        imageUrl:
-          type: string
-          format: uri
-
-    Order:
-      type: object
       required:
-        - id
-        - userId
-        - items
-        - totalAmount
-        - status
-        - createdAt
+        - title
+        - content
+        - categoryId
+
+    Comment:
+      type: object
       properties:
         id:
           type: string
-          format: uuid
-        userId:
+        blogId:
           type: string
-          format: uuid
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderItem'
-        totalAmount:
-          type: number
-          format: float
-          description: Toplam tutar (TL)
+        author:
+          type: string
+        text:
+          type: string
         status:
           type: string
-          enum: [pending, processing, shipped, delivered, cancelled]
-          description: Sipariş durumu
-        shippingAddress:
-          $ref: '#/components/schemas/Address'
+          enum: [pending, approved]
         createdAt:
           type: string
           format: date-time
-        updatedAt:
-          type: string
-          format: date-time
 
-    OrderCreate:
+    CommentInput:
       type: object
+      properties:
+        text:
+          type: string
       required:
-        - items
-        - shippingAddress
-      properties:
-        items:
-          type: array
-          minItems: 1
-          items:
-            type: object
-            required:
-              - productId
-              - quantity
-            properties:
-              productId:
-                type: string
-                format: uuid
-              quantity:
-                type: integer
-                minimum: 1
-        shippingAddress:
-          $ref: '#/components/schemas/Address'
+        - text
 
-    OrderItem:
+    Category:
       type: object
       properties:
-        productId:
+        id:
           type: string
-          format: uuid
-        productName:
+        name:
           type: string
-        quantity:
-          type: integer
-        unitPrice:
-          type: number
-          format: float
-        totalPrice:
-          type: number
-          format: float
-
-    Address:
-      type: object
-      required:
-        - street
-        - city
-        - postalCode
-        - country
-      properties:
-        street:
-          type: string
-          example: "Atatürk Caddesi No:123"
-        city:
-          type: string
-          example: "İstanbul"
-        postalCode:
-          type: string
-          example: "34000"
-        country:
-          type: string
-          example: "Türkiye"
-
-    UserList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-
-    ProductList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-
-    OrderList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Order'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-
-    Pagination:
-      type: object
-      properties:
-        page:
-          type: integer
-          description: Mevcut sayfa
-          example: 1
-        limit:
-          type: integer
-          description: Sayfa başına kayıt
-          example: 20
-        totalPages:
-          type: integer
-          description: Toplam sayfa sayısı
-          example: 5
-        totalItems:
-          type: integer
-          description: Toplam kayıt sayısı
-          example: 95
-
     Error:
       type: object
       required:
