@@ -24,5 +24,6 @@ router.post('/password-reset', ctrl.passwordResetRequest);
 router.post('/password-reset/confirm', ctrl.passwordResetConfirm);
 router.post('/refresh-token', ctrl.refreshToken);
 router.get('/me', protect, ctrl.getMe);
-
+router.get('/verify-email', ctrl.verifyEmail);
+router.post('/resend-verification', ctrl.resendVerification);
 module.exports = router;

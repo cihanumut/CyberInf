@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const { sendPasswordResetEmail, sendVerificationEmail } = require('../utils/email');
+
 const generateTokens = (userId) => {
   const accessToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d'
@@ -26,10 +27,9 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: `Bu ${field} zaten kullanılıyor.` });
     }
 
-    // Doğrulama token'ı oluştur
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
-    const user = await User.create({
+    await User.create({
       username,
       email,
       password,
@@ -37,7 +37,6 @@ exports.register = async (req, res) => {
       emailVerificationToken: verificationToken
     });
 
-    // Doğrulama maili gönder
     const verifyUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/verify-email?token=${verificationToken}&email=${email}`;
     try {
       await sendVerificationEmail(email, verifyUrl);
@@ -45,10 +44,7 @@ exports.register = async (req, res) => {
       console.error('Doğrulama maili gönderilemedi:', emailErr.message);
     }
 
-    // Dev modda token döndür
-    const response = {
-      message: 'Hesabınız oluşturuldu. Lütfen email adresinizi doğrulayın.',
-    };
+    const response = { message: 'Hesabınız oluşturuldu. Lütfen email adresinizi doğrulayın.' };
     if (process.env.NODE_ENV === 'development') {
       response.devVerifyUrl = verifyUrl;
       response.devToken = verificationToken;
@@ -64,22 +60,20 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const errors = validationResult(req);
-    
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     const { email, password } = req.body;
-    
-    const user = await User.findOne({ email }).select('+password +emailVerificationToken');
-   
+    const user = await User.findOne({ email }).select('+password');
+    if (!user) return res.status(401).json({ error: 'Email veya şifre hatalı.' });
+
     const match = await user.comparePassword(password);
-    
-    if (!user || !match)
-      return res.status(401).json({ error: 'Email veya şifre hatalı.' });
-    
+    if (!match) return res.status(401).json({ error: 'Email veya şifre hatalı.' });
+
     if (!user.isActive)
       return res.status(401).json({ error: 'Hesabınız devre dışı bırakılmış.' });
-    
-   
+
+    if (!user.isEmailVerified)
+      return res.status(401).json({ error: 'Email adresinizi doğrulamanız gerekiyor.', emailNotVerified: true });
 
     const { accessToken, refreshToken } = generateTokens(user._id);
     user.refreshToken = refreshToken;
@@ -163,7 +157,6 @@ exports.passwordResetRequest = async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}&email=${email}`;
-
     try {
       await sendPasswordResetEmail(email, resetUrl);
     } catch (emailErr) {
