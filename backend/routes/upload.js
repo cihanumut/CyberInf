@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -12,33 +13,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// CloudinaryStorage import - farklı yöntemler dene
-let CloudinaryStorage;
-try {
-  // Yöntem 1
-  CloudinaryStorage = require('multer-storage-cloudinary').CloudinaryStorage;
-} catch {
-  try {
-    // Yöntem 2
-    CloudinaryStorage = require('multer-storage-cloudinary');
-  } catch {
-    // Yöntem 3
-    const pkg = require('multer-storage-cloudinary');
-    CloudinaryStorage = pkg.CloudinaryStorage || pkg.default || pkg;
-  }
-}
+// Memory storage
+const storage = multer.memoryStorage();
 
-// Storage
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'cyberinf',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-    transformation: [{ width: 1200, crop: 'limit' }]
-  }
-});
-
-// Upload middleware
 const upload = multer({
   storage: storage,
   limits: { fileSize: 20 * 1024 * 1024 },
@@ -53,27 +30,38 @@ const upload = multer({
 });
 
 // Upload endpoint
-router.post('/image', protect, (req, res) => {
-  upload.single('image')(req, res, (err) => {
-    if (err instanceof multer.MulterError) {
-      if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({ error: 'Dosya boyutu 20MB\'dan büyük olamaz.' });
-      }
-      return res.status(400).json({ error: err.message });
-    } else if (err) {
-      return res.status(400).json({ error: err.message });
-    }
-
+router.post('/image', protect, upload.single('image'), async (req, res) => {
+  try {
     if (!req.file) {
       return res.status(400).json({ error: 'Dosya yüklenmedi.' });
     }
 
-    return res.status(200).json({
-      message: 'Resim başarıyla yüklendi.',
-      url: req.file.path,
-      filename: req.file.filename
-    });
-  });
+    // Cloudinary'e upload
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'cyberinf',
+        transformation: [{ width: 1200, crop: 'limit' }]
+      },
+      (error, result) => {
+        if (error) {
+          console.error('Cloudinary error:', error);
+          return res.status(500).json({ error: 'Cloudinary yükleme hatası.' });
+        }
+
+        return res.status(200).json({
+          message: 'Resim başarıyla yüklendi.',
+          url: result.secure_url,
+          filename: result.public_id
+        });
+      }
+    );
+
+    streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+
+  } catch (error) {
+    console.error('Upload error:', error);
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;
