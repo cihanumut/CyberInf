@@ -21,7 +21,7 @@ exports.sendPasswordResetEmail = async (email, resetUrl) => {
 
 exports.sendVerificationEmail = async (email, verifyUrl) => {
   await resend.emails.send({
-    from: 'CyberInf <onboarding@resend.dev>',
+    from: 'CyberInf <noreply@cyberinf.com.tr>',
     to: email,
     subject: 'Email Adresinizi Doğrulayın',
     html: `
