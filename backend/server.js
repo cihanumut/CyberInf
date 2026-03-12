@@ -20,8 +20,8 @@ app.set('trust proxy', 1);
 // ── Güvenlik ──────────────────────────────────
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true
+  origin: "*";
+  credentials: false
 }));
 
 const globalLimiter = rateLimit({
