@@ -20,7 +20,7 @@ app.set('trust proxy', 1);
 // ── Güvenlik ──────────────────────────────────
 app.use(helmet());
 app.use(cors({
-  origin: "*";
+  origin: "*",
   credentials: false
 }));
 
