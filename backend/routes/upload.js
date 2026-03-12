@@ -1,7 +1,8 @@
 const express = require('express');
 const multer = require('multer');
 const { v2: cloudinary } = require('cloudinary');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const pkg = require('multer-storage-cloudinary');
+const CloudinaryStorage = pkg.CloudinaryStorage || pkg.default?.CloudinaryStorage || pkg;
 const { protect } = require('../middleware/auth');
 const router = express.Router();
 
