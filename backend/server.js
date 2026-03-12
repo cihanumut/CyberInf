@@ -20,8 +20,8 @@ app.set('trust proxy', 1);
 // ── Güvenlik ──────────────────────────────────
 app.use(helmet());
 app.use(cors({
-  origin: "*",
-  credentials: false
+  origin: ['https://cyberinf.com.tr', 'https://www.cyberinf.com.tr', 'http://localhost:3000'],
+  credentials: true
 }));
 
 const globalLimiter = rateLimit({
