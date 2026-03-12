@@ -3,7 +3,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 exports.sendPasswordResetEmail = async (email, resetUrl) => {
   await resend.emails.send({
-    from: 'CyberInf <onboarding@resend.dev>',
+    from: 'CyberInf <noreply@cyberinf.com.tr>',
     to: email,
     subject: 'Şifre Sıfırlama',
     html: `
