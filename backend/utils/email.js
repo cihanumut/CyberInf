@@ -1,16 +1,9 @@
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS
-  }
-});
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 exports.sendPasswordResetEmail = async (email, resetUrl) => {
-  await transporter.sendMail({
-    from: `CyberInf <${process.env.GMAIL_USER}>`,
+  await resend.emails.send({
+    from: 'CyberInf <onboarding@resend.dev>',
     to: email,
     subject: 'Şifre Sıfırlama',
     html: `
@@ -27,8 +20,8 @@ exports.sendPasswordResetEmail = async (email, resetUrl) => {
 };
 
 exports.sendVerificationEmail = async (email, verifyUrl) => {
-  await transporter.sendMail({
-    from: `CyberInf <${process.env.GMAIL_USER}>`,
+  await resend.emails.send({
+    from: 'CyberInf <onboarding@resend.dev>',
     to: email,
     subject: 'Email Adresinizi Doğrulayın',
     html: `
