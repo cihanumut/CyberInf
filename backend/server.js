@@ -16,7 +16,7 @@ const uploadRoutes        = require('./routes/upload');
 const notificationRoutes  = require('./routes/notifications');
 
 const app = express();
-
+app.set('trust proxy', 1);
 // ── Güvenlik ──────────────────────────────────
 app.use(helmet());
 app.use(cors({
