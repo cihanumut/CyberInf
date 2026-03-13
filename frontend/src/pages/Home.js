@@ -15,18 +15,18 @@ export default function Home() {
   return (
     <div className="container page-section" style={{ paddingTop: '4rem' }}>
       {/* Hero */}
-      <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center', marginBottom: '4rem' }}>
+      <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center', marginBottom: '4rem', padding: '0 1rem' }}>
         <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-green)', marginBottom: '1rem', fontSize: '0.875rem', letterSpacing: '0.1em' }}>
           $ ./cybersec-blog --start
         </div>
-        <h1 className="page-title" style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>
-          Siber Güvenlik<br/><span>Bilgi Merkezi</span>
+        <h1 className="page-title" style={{ fontSize: 'clamp(1.8rem, 5vw, 3rem)', marginBottom: '1.5rem' }}>
+          Siber Güvenlik<br /><span>Bilgi Merkezi</span>
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '2.5rem', lineHeight: 1.8 }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 'clamp(0.9rem, 2vw, 1.1rem)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
           Web güvenliği, ağ saldırıları, CTF çözümleri ve daha fazlası.
           Topluluğun bilgi birikimini keşfet veya kendin katkıda bulun.
         </p>
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link to="/posts" className="btn btn-primary btn-lg">Yazıları Gör</Link>
           <Link to="/register" className="btn btn-secondary btn-lg">Katıl</Link>
         </div>
@@ -55,7 +55,7 @@ export default function Home() {
           <div className="grid-3">
             {blogs.map(blog => (
               <Link key={blog._id} to={`/posts/${blog.slug}`} style={{ textDecoration: 'none' }}>
-                <div className="card" style={{ height: '100%', transition: 'border-color 0.2s' }}>
+                <div className="card" style={{ height: '100%' }}>
                   {blog.coverImage && (
                     <img src={blog.coverImage} alt={blog.title} style={{ width: '100%', height: 150, objectFit: 'cover', borderRadius: 'var(--radius-md)', marginBottom: '1rem' }} />
                   )}
