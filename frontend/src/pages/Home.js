@@ -13,7 +13,6 @@ export default function Home() {
   }, []);
 
   return (
-    {}
     <div className="container page-section">
       
       {/* Hero */}
@@ -22,7 +21,6 @@ export default function Home() {
           $ ./cybersec-blog --start
         </div>
         
-        {}
         <h1 className="page-title" style={{ fontSize: 'clamp(1.8rem, 5vw, 3rem)', marginBottom: '1.5rem' }}>
           Siber Güvenlik<br /><span>Bilgi Merkezi</span>
         </h1>
@@ -32,7 +30,6 @@ export default function Home() {
           Topluluğun bilgi birikimini keşfet veya kendin katkıda bulun.
         </p>
         
-        {}
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link to="/posts" className="btn btn-primary btn-lg" style={{ flex: '1 1 200px', maxWidth: '300px' }}>
             Yazıları Gör
@@ -43,7 +40,6 @@ export default function Home() {
         </div>
       </div>
 
-      {}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <h2 style={{ fontFamily: 'var(--font-mono)', fontSize: '1.1rem', margin: 0 }}>
@@ -63,7 +59,6 @@ export default function Home() {
             Henüz yayınlanmış yazı yok.
           </div>
         ) : (
-          {}
           <div className="grid-3">
             {blogs.map(blog => (
               <Link key={blog._id} to={`/posts/${blog.slug}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
