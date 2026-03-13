@@ -50,25 +50,29 @@ export default function PostList() {
         <span>//</span> Tüm Yazılar
       </h1>
 
+      {/* ARAMA VE FİLTRELEME ALANI */}
       <div
         style={{
           display: "flex",
           gap: "1rem",
           marginBottom: "2rem",
-          flexWrap: "wrap",
+          flexWrap: "wrap", // Mobilde alt alta inmesini sağlar
           alignItems: "center",
         }}
       >
-        <input
-          className="form-input"
-          style={{ maxWidth: 300 }}
-          placeholder="Ara..."
-          defaultValue={search}
-          onKeyDown={(e) =>
-            e.key === "Enter" && setParam("search", e.target.value)
-          }
-        />
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+        <div style={{ flex: "1 1 300px", minWidth: "250px" }}> {/* Arama kutusu esnek yapıldı */}
+          <input
+            className="form-input"
+            style={{ width: "100%" }}
+            placeholder="Ara..."
+            defaultValue={search}
+            onKeyDown={(e) =>
+              e.key === "Enter" && setParam("search", e.target.value)
+            }
+          />
+        </div>
+        
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", flex: "2 1 auto" }}>
           <button
             className={`btn btn-sm ${!categoryId ? "btn-primary" : "btn-secondary"}`}
             onClick={() => setParam("category", "")}
@@ -100,6 +104,8 @@ export default function PostList() {
             padding: "4rem",
             color: "var(--text-muted)",
             fontFamily: "var(--font-mono)",
+            border: "1px dashed var(--border)",
+            borderRadius: "var(--radius-lg)"
           }}
         >
           Yazı bulunamadı.
@@ -110,9 +116,10 @@ export default function PostList() {
             <Link
               key={blog._id}
               to={`/posts/${blog.slug}`}
-              style={{ textDecoration: "none" }}
+              style={{ textDecoration: "none", display: "block", height: "100%" }}
             >
-              <div className="card" style={{ height: "100%" }}>
+              {/* KART DÜZENİ: Home bileşenindeki esnek yapı buraya da uygulandı */}
+              <div className="card" style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                 {blog.coverImage && (
                   <img
                     src={blog.coverImage}
@@ -150,15 +157,16 @@ export default function PostList() {
                     fontSize: "1rem",
                     marginBottom: "0.5rem",
                     fontFamily: "var(--font-mono)",
+                    lineHeight: 1.4
                   }}
                 >
                   {blog.title}
                 </h2>
                 <p
                   style={{
-                    fontSize: "0.8rem",
+                    fontSize: "0.85rem",
                     color: "var(--text-secondary)",
-                    marginBottom: "1rem",
+                    marginBottom: "1.25rem",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
@@ -175,19 +183,24 @@ export default function PostList() {
                     fontSize: "0.75rem",
                     color: "var(--text-muted)",
                     fontFamily: "var(--font-mono)",
+                    marginTop: "auto", // Yazar ve tarihi en alta iter
                   }}
                 >
                   <Link
                     to={`/profile/${blog.author?._id}`}
                     style={{
-                      color: "var(--text-muted)",
+                      color: "var(--accent-green)",
                       textDecoration: "none",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth: "60%"
                     }}
                     onClick={(e) => e.stopPropagation()}
                   >
                     @{blog.author?.username}
                   </Link>
-                  <span>{blog.readTime} dk okuma</span>
+                  <span style={{ whiteSpace: "nowrap" }}>{blog.readTime} dk okuma</span>
                 </div>
               </div>
             </Link>
@@ -195,13 +208,15 @@ export default function PostList() {
         </div>
       )}
 
+      {/* SAYFALAMA (PAGINATION) */}
       {pagination.totalPages > 1 && (
         <div
           style={{
             display: "flex",
             justifyContent: "center",
             gap: "0.5rem",
-            marginTop: "2rem",
+            marginTop: "2.5rem",
+            flexWrap: "wrap", // Sayfa numaraları çoksa mobilde alt alta inmesini sağlar
           }}
         >
           {Array.from({ length: pagination.totalPages }, (_, i) => (
