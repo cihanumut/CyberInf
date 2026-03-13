@@ -137,6 +137,9 @@ body {
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   transition: border-color 0.2s;
+  overflow: hidden; 
+  word-wrap: break-word; 
+  word-break: break-word;
 }
 .card:hover { border-color: var(--accent-green); }
 
