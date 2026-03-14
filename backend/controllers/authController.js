@@ -227,10 +227,13 @@ exports.refreshToken = async (req, res) => {
 
 // GET /auth/me
 exports.getMe = async (req, res) => {
+  const user = await User.findById(req.user._id);
   res.json({
     user: {
-      id: req.user._id, username: req.user.username, email: req.user.email,
-      role: req.user.role, avatar: req.user.avatar, bio: req.user.bio, createdAt: req.user.createdAt
+      id: user._id, username: user.username, email: user.email,
+      role: user.role, avatar: user.avatar, bio: user.bio, createdAt: user.createdAt,
+      followersCount: user.followers?.length || 0,
+      followingCount: user.following?.length || 0
     }
   });
 };
