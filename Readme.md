@@ -21,8 +21,8 @@
 
 ## Proje Linkleri
 
-- **REST API Adresi:** [api.yazmuh.com](https://api.yazmuh.com)
-- **Web Frontend Adresi:** [frontend.yazmuh.com](https://frontend.yazmuh.com)
+- **REST API Adresi:** [api.cyberinf.com.tr](https://api.cyberinf.com.tr)
+- **Web Frontend Adresi:** [www.cyberinf.com.tr](https://www.cyberinf.com.tr)
 
 ---
 
