@@ -9,11 +9,11 @@
  - **Açıklama:** Kayıtlı kullanıcıların sisteme giriş yapmasını sağlar. Başarılı giriş sonrası JWT token döndürülür.
 
 3. **Şifre Sıfırlama** 
- - **API Metodu:** `POST /auth/password-reset`
+ - **API Metodu:** `POST /auth/forgot-password`
  - **Açıklama:** Kullanıcının email adresine şifre sıfırlama linki gönderilir.
 
 4. **Şifre Sıfırlama Onayı** 
- - **API Metodu:** `POST /auth/password-reset/confirm`
+ - **API Metodu:** `POST /auth/reset-password?token=id`
  - **Açıklama:** Kullanıcı token ile yeni şifre belirler.
 
 5. **Çıkış yapma** 
@@ -25,19 +25,19 @@
 ## 👤 Kullanıcı İşlemleri
 
 6. **Profil Görüntüleme** 
- - **API Metodu:** `GET /users/{userId}`
+ - **API Metodu:** `GET /profile`
  - **Açıklama:** Kullanıcının profil bilgilerini görüntüler. Giriş yapılmış olmalıdır.
 
 7. **Profil Güncelleme**  
- - **API Metodu:** `PUT /users/{userId}`
+ - **API Metodu:** `PUT /profile`
  - **Açıklama:** Kullanıcının ad, soyad, email, telefon gibi bilgilerini günceller. Kullanıcı sadece kendi bilgilerini güncelleyebilir.
   
 8. **Hesap Silme**  
- - **API Metodu:** `DELETE /users/{userId}`
+ - **API Metodu:** `DELETE /profile`
  - **Açıklama:** Kullanıcı hesabını kalıcı olarak siler. İşlem geri alınamaz.
 
-9. **Kullanıcının Bloglarını Listeleme**  
- - **API Metodu:** `GET /users/{userId}/blogs`
+9. **Kullanıcının Kendi Yazılarını Görüntülemesi**  
+ - **API Metodu:** `GET /dashboard`
  - **Açıklama:** Kullanıcının eklediği blog yazılarını listeler. Admin tüm kullanıcıları görüntüleyebilir.
    
 ---
@@ -45,7 +45,7 @@
 ## 💬 Yorum İşlemleri
 
 10. **Yorum Ekleme**  
-    - **API Metodu:** `POST /blogs/{blogId}/comments`  
+    - **API Metodu:** `POST /posts/{blogId}/comments`  
     - **Açıklama:** Belirli bir blog yazısına yorum ekler. Giriş yapılmış olmalıdır..
 
 11. **Onay Bekleyen Yorum Listeleme(Admin)**  
@@ -66,25 +66,30 @@
 
 
 14. **Blog Yazısı Ekleme**  
-    - **API Metodu:** `POST /blogs`
+    - **API Metodu:** `POST /posts/create`
     - **Açıklama:** Yeni blog yazısı ekler. Giriş yapılmış olmalıdır.
 
 15. **Blog Yazısı Düzenleme**  
-    - **API Metodu:** `PUT /blogs/{blogId}`  
+    - **API Metodu:** `PUT /posts/{blogId}`  
     - **Açıklama:** Kullanıcı kendi blogunu düzenleyebilir. Admin tüm blogları düzenleyebilir.
 
 16. **Blog Yazısı Silme**  
-    - **API Metodu:** `DELETE /blogs/{blogId}`  
+    - **API Metodu:** `DELETE /posts/{blogId}`  
     - **Açıklama:** Kullanıcı kendi blogunu silebilir. Admin tüm blogları silebilir.
+   
+17. **Blog Yazıları Listeleme**  
+    - **API Metodu:** `GET /posts`  
+    - **Açıklama:** Sistemdeki tüm yazıları getirir.
+
+18. **Belirli Bir Blogu Görüntüleme**  
+    - **API Metodu:** `GET /posts/{blogId}`  
+    - **Açıklama:** Sistemdeki tüm yazıları getirir.
+
 
 ---
 
 ## 🗂️ Kategori İşlemleri
 
-17. **Kategori Listeleme**  
-    - **API Metodu:** `GET /categories`  
-    - **Açıklama:** Sistemdeki tüm blog kategorilerini listeler. 
-
 18. **Belirli Kategoriye Ait Blogları Getirme**  
-    - **API Metodu:** `GET /categories/{categoryId}/blogs`  
+    - **API Metodu:** `GET /posts?category=categoryid`  
     - **Açıklama:** Seçilen kategoriye ait blog yazılarını listeler.
