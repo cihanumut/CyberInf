@@ -52,13 +52,13 @@
     - **API Metodu:** `GET /comments?status=pending`  
     - **Açıklama:** Adminlerin onay bekleyen yorumları listelemesini sağlar.
 
-12. **Yorum Güncelleme**  
-    - **API Metodu:** `PUT /comments/{commentId}`  
+12. **Onay Bekleyen Yazıları Görüntüleme(Admin)**  
+    - **API Metodu:** `GET /admin/posts`  
     - **Açıklama:** Kullanıcı kendi yorumunu düzenleyebilir. Admin tüm yorumları düzenleyebilir.
 
-13. **Yorum Silme**  
-    - **API Metodu:** `DELETE /comments/{commentId}`  
-    - **Açıklama:** Kullanıcı kendi yorumunu silebilir. Admin tüm yorumları silebilir.
+13. **Yorum Listeleme(Admin)**  
+    - **API Metodu:** `GET /admin/comments`  
+    - **Açıklama:** Admin bekleyen tüm yorumları listeleyebilir.
 
 ---
 
@@ -83,13 +83,16 @@
 
 18. **Belirli Bir Blogu Görüntüleme**  
     - **API Metodu:** `GET /posts/{blogId}`  
+    - **Açıklama:** Belirli bir blog yazısını getirir.
+   
+19. **Admin Sekmesi**  
+    - **API Metodu:** `GET /admin`  
     - **Açıklama:** Sistemdeki tüm yazıları getirir.
-
 
 ---
 
 ## 🗂️ Kategori İşlemleri
 
-18. **Belirli Kategoriye Ait Blogları Getirme**  
+20. **Belirli Kategoriye Ait Blogları Getirme**  
     - **API Metodu:** `GET /posts?category=categoryid`  
     - **Açıklama:** Seçilen kategoriye ait blog yazılarını listeler.
