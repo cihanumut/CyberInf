@@ -54,38 +54,42 @@
 
 12. **Onay Bekleyen Yazıları Görüntüleme(Admin)**  
     - **API Metodu:** `GET /admin/posts`  
-    - **Açıklama:** Kullanıcı kendi yorumunu düzenleyebilir. Admin tüm yorumları düzenleyebilir.
+    - **Açıklama:** Admin onay bekleyen yazıları görüntüleyip onaylar veya reddeder.
 
 13. **Yorum Listeleme(Admin)**  
     - **API Metodu:** `GET /admin/comments`  
     - **Açıklama:** Admin bekleyen tüm yorumları listeleyebilir.
-
+      
+14. **Yorum Silme**  
+    - **API Metodu:** `DELETE /comments/commentid`  
+    - **Açıklama:** Belirli bir yorum silnir.
+      
 ---
 
 ## 📝 Blog İşlemleri
 
 
-14. **Blog Yazısı Ekleme**  
+15. **Blog Yazısı Ekleme**  
     - **API Metodu:** `POST /posts/create`
     - **Açıklama:** Yeni blog yazısı ekler. Giriş yapılmış olmalıdır.
 
-15. **Blog Yazısı Düzenleme**  
+16. **Blog Yazısı Düzenleme**  
     - **API Metodu:** `PUT /posts/{blogId}`  
     - **Açıklama:** Kullanıcı kendi blogunu düzenleyebilir. Admin tüm blogları düzenleyebilir.
 
-16. **Blog Yazısı Silme**  
+17. **Blog Yazısı Silme**  
     - **API Metodu:** `DELETE /posts/{blogId}`  
     - **Açıklama:** Kullanıcı kendi blogunu silebilir. Admin tüm blogları silebilir.
    
-17. **Blog Yazıları Listeleme**  
+18. **Blog Yazıları Listeleme**  
     - **API Metodu:** `GET /posts`  
     - **Açıklama:** Sistemdeki tüm yazıları getirir.
 
-18. **Belirli Bir Blogu Görüntüleme**  
+19. **Belirli Bir Blogu Görüntüleme**  
     - **API Metodu:** `GET /posts/{blogId}`  
     - **Açıklama:** Belirli bir blog yazısını getirir.
    
-19. **Admin Sekmesi**  
+20. **Admin Sekmesi**  
     - **API Metodu:** `GET /admin`  
     - **Açıklama:** Sistemdeki tüm yazıları getirir.
 
