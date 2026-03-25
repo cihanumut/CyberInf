@@ -1,102 +1,177 @@
+# CyberInf API Dokümantasyonu
+
+---
+
 ## 🔐 Authentication İşlemleri
 
-1. **Üye Olma** 
- - **API Metodu:** `POST /auth/register`
- - **Açıklama:** Kullanıcıların yeni hesap oluşturmasını sağlar. Email ve şifre ile kayıt yapılır.
+1. **Üye Olma**
+   - **API Metodu:** `POST /auth/register`
+   - **Açıklama:** Yeni hesap oluşturur. Kayıt sonrası email doğrulama maili gönderilir.
 
-2. **Giriş Yapma** 
- - **API Metodu:** `POST /auth/login`
- - **Açıklama:** Kayıtlı kullanıcıların sisteme giriş yapmasını sağlar. Başarılı giriş sonrası JWT token döndürülür.
+2. **Giriş Yapma**
+   - **API Metodu:** `POST /auth/login`
+   - **Açıklama:** Kayıtlı kullanıcıların sisteme giriş yapmasını sağlar. Email doğrulanmış olmalıdır. Başarılı girişte `accessToken` ve `refreshToken` döndürülür.
 
-3. **Şifre Sıfırlama** 
- - **API Metodu:** `POST /auth/forgot-password`
- - **Açıklama:** Kullanıcının email adresine şifre sıfırlama linki gönderilir.
+3. **Çıkış Yapma**
+   - **API Metodu:** `POST /auth/logout` 🔒
+   - **Açıklama:** Kullanıcının sistemden güvenli şekilde çıkış yapmasını sağlar. Refresh token geçersiz hale getirilir.
 
-4. **Şifre Sıfırlama Onayı** 
- - **API Metodu:** `POST /auth/reset-password?token=id`
- - **Açıklama:** Kullanıcı token ile yeni şifre belirler.
+4. **Mevcut Kullanıcı Bilgisi**
+   - **API Metodu:** `GET /auth/me` 🔒
+   - **Açıklama:** Giriş yapmış kullanıcının bilgilerini döndürür.
 
-5. **Çıkış yapma** 
- - **API Metodu:** `POST /auth/logout`
- - **Açıklama:** Kullanıcının sistemden güvenli şekilde çıkış yapmasını sağlar. JWT tabanlı sistemlerde genellikle client tarafında token silinir. Eğer sistemde token blacklist yapısı varsa, token geçersiz hale getirilir.
+5. **Token Yenileme**
+   - **API Metodu:** `POST /auth/refresh-token`
+   - **Açıklama:** Refresh token ile yeni access token alır.
+
+6. **Email Doğrulama**
+   - **API Metodu:** `GET /auth/verify-email?token=xxx&email=xxx`
+   - **Açıklama:** Email doğrulama linkine tıklandığında hesabı aktifleştirir.
+
+7. **Doğrulama Maili Tekrar Gönder**
+   - **API Metodu:** `POST /auth/resend-verification`
+   - **Açıklama:** Email doğrulama mailini tekrar gönderir.
+
+8. **Şifre Sıfırlama İsteği**
+   - **API Metodu:** `POST /auth/password-reset`
+   - **Açıklama:** Kullanıcının email adresine şifre sıfırlama linki gönderilir.
+
+9. **Şifre Sıfırlama Onayı**
+   - **API Metodu:** `POST /auth/password-reset/confirm`
+   - **Body:** `{ token, email, newPassword }`
+   - **Açıklama:** Token ile yeni şifre belirlenir.
 
 ---
 
 ## 👤 Kullanıcı İşlemleri
 
-6. **Profil Görüntüleme** 
- - **API Metodu:** `GET /profile`
- - **Açıklama:** Kullanıcının profil bilgilerini görüntüler. Giriş yapılmış olmalıdır.
+10. **Profil Görüntüleme**
+    - **API Metodu:** `GET /users/:userId`
+    - **Açıklama:** Belirli bir kullanıcının profil bilgilerini görüntüler.
 
-7. **Profil Güncelleme**  
- - **API Metodu:** `PUT /profile`
- - **Açıklama:** Kullanıcının ad, soyad, email, telefon gibi bilgilerini günceller. Kullanıcı sadece kendi bilgilerini güncelleyebilir.
-  
-8. **Hesap Silme**  
- - **API Metodu:** `DELETE /profile`
- - **Açıklama:** Kullanıcı hesabını kalıcı olarak siler. İşlem geri alınamaz.
+11. **Profil Güncelleme**
+    - **API Metodu:** `PUT /users/:userId` 🔒
+    - **Açıklama:** Kullanıcı kendi bilgilerini (kullanıcı adı, bio) güncelleyebilir.
 
-9. **Kullanıcının Kendi Yazılarını Görüntülemesi**  
- - **API Metodu:** `GET /dashboard`
- - **Açıklama:** Kullanıcının eklediği blog yazılarını listeler. Admin tüm kullanıcıları görüntüleyebilir.
-   
----
+12. **Hesap Silme**
+    - **API Metodu:** `DELETE /users/:userId` 🔒
+    - **Açıklama:** Kullanıcı hesabını kalıcı olarak siler.
 
-## 💬 Yorum İşlemleri
+13. **Kullanıcının Yazılarını Listeleme**
+    - **API Metodu:** `GET /users/:userId/blogs`
+    - **Açıklama:** Belirli bir kullanıcının blog yazılarını listeler.
 
-10. **Yorum Ekleme**  
-    - **API Metodu:** `POST /posts/{blogId}/comments`  
-    - **Açıklama:** Belirli bir blog yazısına yorum ekler. Giriş yapılmış olmalıdır..
+14. **Takip Et / Takibi Bırak**
+    - **API Metodu:** `POST /users/:userId/follow` 🔒
+    - **Açıklama:** Kullanıcıyı takip eder veya takibi bırakır. Toggle çalışır.
 
-11. **Onay Bekleyen Yorum Listeleme(Admin)**  
-    - **API Metodu:** `GET /comments?status=pending`  
-    - **Açıklama:** Adminlerin onay bekleyen yorumları listelemesini sağlar.
-
-12. **Onay Bekleyen Yazıları Görüntüleme(Admin)**  
-    - **API Metodu:** `GET /admin/posts`  
-    - **Açıklama:** Admin onay bekleyen yazıları görüntüleyip onaylar veya reddeder.
-
-13. **Yorum Listeleme(Admin)**  
-    - **API Metodu:** `GET /admin/comments`  
-    - **Açıklama:** Admin bekleyen tüm yorumları listeleyebilir.
-      
-14. **Yorum Silme**  
-    - **API Metodu:** `DELETE /comments/commentid`  
-    - **Açıklama:** Belirli bir yorum silnir.
-      
 ---
 
 ## 📝 Blog İşlemleri
 
+15. **Blog Yazıları Listeleme**
+    - **API Metodu:** `GET /blogs`
+    - **Query Params:** `page`, `limit`, `search`, `sort`
+    - **Açıklama:** Yayınlanmış tüm blog yazılarını listeler.
 
-15. **Blog Yazısı Ekleme**  
-    - **API Metodu:** `POST /posts/create`
-    - **Açıklama:** Yeni blog yazısı ekler. Giriş yapılmış olmalıdır.
+16. **Belirli Bir Blogu Görüntüleme**
+    - **API Metodu:** `GET /blogs/:blogId`
+    - **Açıklama:** Belirli bir blog yazısını getirir. Her istekte görüntülenme sayısı artar.
 
-16. **Blog Yazısı Düzenleme**  
-    - **API Metodu:** `PUT /posts/{blogId}`  
-    - **Açıklama:** Kullanıcı kendi blogunu düzenleyebilir. Admin tüm blogları düzenleyebilir.
+17. **Blog Yazısı Ekleme**
+    - **API Metodu:** `POST /blogs` 🔒
+    - **Açıklama:** Yeni blog yazısı ekler. Yazı admin onayına gönderilir.
 
-17. **Blog Yazısı Silme**  
-    - **API Metodu:** `DELETE /posts/{blogId}`  
-    - **Açıklama:** Kullanıcı kendi blogunu silebilir. Admin tüm blogları silebilir.
-   
-18. **Blog Yazıları Listeleme**  
-    - **API Metodu:** `GET /posts`  
-    - **Açıklama:** Sistemdeki tüm yazıları getirir.
+18. **Blog Yazısı Düzenleme**
+    - **API Metodu:** `PUT /blogs/:blogId` 🔒
+    - **Açıklama:** Kullanıcı kendi blogunu, admin tüm blogları düzenleyebilir.
 
-19. **Belirli Bir Blogu Görüntüleme**  
-    - **API Metodu:** `GET /posts/{blogId}`  
-    - **Açıklama:** Belirli bir blog yazısını getirir.
-   
-20. **Admin Sekmesi**  
-    - **API Metodu:** `GET /admin`  
-    - **Açıklama:** Sistemdeki tüm yazıları getirir.
+19. **Blog Yazısı Silme**
+    - **API Metodu:** `DELETE /blogs/:blogId` 🔒
+    - **Açıklama:** Kullanıcı kendi blogunu, admin tüm blogları silebilir.
+
+20. **Blog Beğeni**
+    - **API Metodu:** `POST /blogs/:blogId/like` 🔒
+    - **Açıklama:** Blog yazısını beğenir veya beğeniyi geri alır. Toggle çalışır.
+
+---
+
+## 💬 Yorum İşlemleri
+
+21. **Yorum Ekleme**
+    - **API Metodu:** `POST /blogs/:blogId/comments` 🔒
+    - **Açıklama:** Blog yazısına yorum ekler. Yorum admin onayına gönderilir.
+
+22. **Yorum Beğeni**
+    - **API Metodu:** `POST /blogs/:blogId/comments/:commentId/like` 🔒
+    - **Açıklama:** Yorumu beğenir veya beğeniyi geri alır. Toggle çalışır.
+
+23. **Yorum Listeleme (Admin)**
+    - **API Metodu:** `GET /comments?status=pending` 🔒 Admin
+    - **Açıklama:** Onay bekleyen yorumları listeler.
+
+24. **Yorum Güncelleme (Admin)**
+    - **API Metodu:** `PUT /comments/:commentId` 🔒 Admin
+    - **Açıklama:** Yorumu onaylar veya reddeder.
+
+25. **Yorum Silme**
+    - **API Metodu:** `DELETE /comments/:commentId` 🔒
+    - **Açıklama:** Yorum sahibi veya admin yorumu siler.
 
 ---
 
 ## 🗂️ Kategori İşlemleri
 
-20. **Belirli Kategoriye Ait Blogları Getirme**  
-    - **API Metodu:** `GET /posts?category=categoryid`  
+26. **Kategorileri Listeleme**
+    - **API Metodu:** `GET /categories`
+    - **Açıklama:** Tüm kategorileri listeler.
+
+27. **Kategoriye Ait Blogları Getirme**
+    - **API Metodu:** `GET /categories/:categoryId/blogs`
     - **Açıklama:** Seçilen kategoriye ait blog yazılarını listeler.
+
+28. **Kategori Ekleme (Admin)**
+    - **API Metodu:** `POST /categories` 🔒 Admin
+    - **Açıklama:** Yeni kategori ekler.
+
+29. **Kategori Silme (Admin)**
+    - **API Metodu:** `DELETE /categories/:categoryId` 🔒 Admin
+    - **Açıklama:** Kategori siler.
+
+---
+
+## 🔔 Bildirim İşlemleri
+
+30. **Bildirimleri Listeleme**
+    - **API Metodu:** `GET /notifications` 🔒
+    - **Açıklama:** Kullanıcının bildirimlerini listeler.
+
+31. **Tüm Bildirimleri Okundu Say**
+    - **API Metodu:** `PUT /notifications/read-all` 🔒
+    - **Açıklama:** Tüm bildirimleri okundu olarak işaretler.
+
+32. **Bildirim Okundu Say**
+    - **API Metodu:** `PUT /notifications/:id/read` 🔒
+    - **Açıklama:** Belirli bir bildirimi okundu olarak işaretler.
+
+---
+
+## 📁 Upload
+
+33. **Resim Yükleme**
+    - **API Metodu:** `POST /upload/image` 🔒
+    - **Content-Type:** `multipart/form-data`
+    - **Açıklama:** Resim yükler, Cloudinary'e kaydeder ve URL döndürür.
+
+---
+
+## ✅ Health Check
+
+34. **Sistem Durumu**
+    - **API Metodu:** `GET /health`
+    - **Açıklama:** API'nin çalışıp çalışmadığını kontrol eder.
+
+---
+
+🔒 = Giriş yapılmış olması gerekir (Bearer Token)  
+🔒 Admin = Sadece admin rolü gerektirir
