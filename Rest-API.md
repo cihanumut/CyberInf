@@ -537,5 +537,5 @@
 
 ## Grup Üyelerinin REST API Metotları
 
-1. [Ali Tutar'ın REST API Metotları](Cihan-Umut-Çolak/Cihan-Umut-Çolak-Rest-API-Gorevleri.md)
+1. [Cihan Umut Çolak'ın REST API Metotları](Cihan-Umut-Çolak/Cihan-Umut-Çolak-Rest-API-Gorevleri.md)
 
