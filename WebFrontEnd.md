@@ -567,7 +567,7 @@
 
 ## Grup Üyelerinin Web Frontend Görevleri
 
-1. [Ali Tutar'ın Web Frontend Görevleri](Cihan-Umut-Çolak/Cihan-Umut-Çolak-Web-Frontend-Gorevleri.md)
+1. [Cihan Umut Çolak'ın Web Frontend Görevleri](Cihan-Umut-Çolak/Cihan-Umut-Çolak-Web-Frontend-Gorevleri.md)
 
 ---
 
