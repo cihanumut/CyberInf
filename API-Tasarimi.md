@@ -22,8 +22,8 @@ info:
   version: 1.0.0
   contact:
     name: API Destek Ekibi
-    email: api-support@cyberımf.com
-    url: https://api.cyberınf.com/support
+    email: cyberinfdestek@hotmail.com
+    url: https://api.cyberınf.com
  
 servers:
   - url: https://api.cyberınf.com/v1
