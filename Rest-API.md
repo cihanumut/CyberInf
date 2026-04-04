@@ -1,7 +1,7 @@
 # REST API Görev Dağılımı
 
 **REST API Adresi:** [api.cyberinf.com](https://api.cyberinf.com.tr/api)
-**API Test Videosu:** [Link buraya eklenecek](https://example.com)
+**API Test Videosu:** [Link buraya eklenecek](https://youtu.be/siPAm-LDcbU)
 
 ---
 
