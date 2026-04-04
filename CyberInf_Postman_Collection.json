@@ -1,0 +1,472 @@
+{
+  "info": {
+    "name": "CyberInf API",
+    "description": "CyberInf Blog API - https://api.cyberinf.com.tr/api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.cyberinf.com.tr/api" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "blogId", "value": "" },
+    { "key": "commentId", "value": "" },
+    { "key": "categoryId", "value": "" },
+    { "key": "notificationId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Kayıt Ol",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Test1234\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Giriş Yap",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.accessToken) {",
+                  "  pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "  pm.collectionVariables.set('userId', json.user.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Test1234\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Mevcut Kullanıcı (Me)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/auth/me",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        },
+        {
+          "name": "Çıkış Yap",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/logout",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        },
+        {
+          "name": "Token Yenile",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/refresh-token",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Email Doğrula",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-email?token=TOKEN_BURAYA&email=EMAIL_BURAYA",
+              "query": [
+                { "key": "token", "value": "TOKEN_BURAYA" },
+                { "key": "email", "value": "EMAIL_BURAYA" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Doğrulama Maili Tekrar Gönder",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/resend-verification",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Şifre Sıfırlama İsteği",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/password-reset",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Şifre Sıfırlama Onayla",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/password-reset/confirm",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"TOKEN_BURAYA\",\n  \"email\": \"test@example.com\",\n  \"newPassword\": \"YeniSifre123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 Kullanıcılar",
+      "item": [
+        {
+          "name": "Kullanıcı Görüntüle",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Kullanıcı Güncelle",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/users/{{userId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"yeniusername\",\n  \"bio\": \"Siber güvenlik meraklısı\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Kullanıcı Sil",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/users/{{userId}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        },
+        {
+          "name": "Kullanıcı Yazıları",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/users/{{userId}}/blogs"
+          }
+        },
+        {
+          "name": "Takip Et / Bırak",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/users/{{userId}}/follow",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "📝 Bloglar",
+      "item": [
+        {
+          "name": "Blogları Listele",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/blogs?page=1&limit=12",
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "12" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "sort", "value": "-createdAt", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Blog Detay",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/blogs/{{blogId}}"
+          }
+        },
+        {
+          "name": "Blog Oluştur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.blog && json.blog._id) {",
+                  "  pm.collectionVariables.set('blogId', json.blog._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/blogs",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test Blog Yazısı\",\n  \"content\": \"## Giriş\\n\\nBu bir test yazısıdır.\",\n  \"excerpt\": \"Kısa özet metni\",\n  \"category\": \"{{categoryId}}\",\n  \"tags\": [\"test\", \"siber\"],\n  \"status\": \"pending\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Blog Güncelle",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/blogs/{{blogId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Güncellenmiş Başlık\",\n  \"content\": \"## Güncellendi\\n\\nİçerik güncellendi.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Blog Sil",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/blogs/{{blogId}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        },
+        {
+          "name": "Blog Beğen",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/blogs/{{blogId}}/like",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "💬 Yorumlar",
+      "item": [
+        {
+          "name": "Yorum Ekle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.comment && json.comment._id) {",
+                  "  pm.collectionVariables.set('commentId', json.comment._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/blogs/{{blogId}}/comments",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Bu harika bir yazı!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Yorum Beğen",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/blogs/{{blogId}}/comments/{{commentId}}/like",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        },
+        {
+          "name": "Bekleyen Yorumlar (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/comments?status=pending",
+              "query": [{ "key": "status", "value": "pending" }]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        },
+        {
+          "name": "Yorum Onayla (Admin)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/comments/{{commentId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Yorum Sil",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/comments/{{commentId}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "🗂️ Kategoriler",
+      "item": [
+        {
+          "name": "Kategorileri Listele",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/categories"
+          }
+        },
+        {
+          "name": "Kategoriye Ait Bloglar",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}/blogs?page=1&limit=12",
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "12" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Kategori Ekle (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.category && json.category._id) {",
+                  "  pm.collectionVariables.set('categoryId', json.category._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/categories",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Kategori\",\n  \"icon\": \"🔐\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Kategori Sil (Admin)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/categories/{{categoryId}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔔 Bildirimler",
+      "item": [
+        {
+          "name": "Bildirimleri Listele",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notifications",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        },
+        {
+          "name": "Tümünü Okundu Say",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/notifications/read-all",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        },
+        {
+          "name": "Bildirim Okundu Say",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/notifications/{{notificationId}}/read",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "📁 Upload",
+      "item": [
+        {
+          "name": "Resim Yükle",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/upload/image",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "image", "type": "file", "src": "" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "✅ Health Check",
+      "item": [
+        {
+          "name": "API Durumu",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    }
+  ]
+}
