@@ -1,6 +1,6 @@
 # CyberInf REST API Metotları
 **Base URL:** `https://api.cyberinf.com.tr/api`  
-**API Test Videosu:** [Link buraya eklenecek](https://example.com)
+**API Test Videosu:** [Link buraya eklenecek](https://www.youtube.com/watch?v=siPAm-LDcbU)
 
 ---
 
