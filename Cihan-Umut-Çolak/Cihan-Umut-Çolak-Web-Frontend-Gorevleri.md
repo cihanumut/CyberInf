@@ -1,5 +1,5 @@
 # CyberInf Web Frontend Görevleri
-**Front-end Test Videosu:** [Link buraya eklenecek](https://example.com)
+**Front-end Test Videosu:** [Link buraya eklenecek](https://www.youtube.com/watch?v=siPAm-LDcbU)
 
 ---
 
