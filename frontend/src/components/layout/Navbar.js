@@ -225,21 +225,22 @@ export default function Navbar() {
                       <div className="notif-empty">Bildirim yok</div>
                     ) : (
                       notifications.map((n) => (
-                        <Link 
-                          to={n.type === "new_follower" && n.sender?._id ? `/profile/${n.sender._id}` : (n.post?.slug ? `/posts/${n.post.slug}` : '#')}
-                          key={n._id} 
-                          className={`notif-item ${!n.isRead ? "unread" : ""}`}
-                          style={{ textDecoration: 'none', display: 'block', color: 'inherit' }}
+                        <div key={n._id} className={`notif-item ${!n.isRead ? "unread" : ""}`}
                           onClick={() => {
-                            setNotifOpen(false);
-                            setMobileOpen(false);
+                            if (n.type === "new_follower" && n.sender?._id) {
+                              navigate(`/profile/${n.sender._id}`);
+                            } else if (n.post?.slug) {
+                              navigate(`/posts/${n.post.slug}`);
+                            }
+                            setNotifOpen(false);   
+                            setTimeout(() => setMobileOpen(false), 100); 
                           }}>
                           <span className="notif-icon">{getNotifIcon(n.type)}</span>
                           <div className="notif-content">
                             <p className="notif-message">{n.message}</p>
                             <span className="notif-time">{new Date(n.createdAt).toLocaleDateString("tr-TR")}</span>
                           </div>
-                        </Link>
+                        </div>
                       ))
                     )}
                   </div>
