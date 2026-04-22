@@ -226,3 +226,32 @@ exports.getFollowing = async (req, res) => {
     res.status(500).json({ error: 'Takip edilenler alınırken hata oluştu.' });
   }
 };
+// GET /users (Arama ve Listeleme)
+exports.getUsers = async (req, res) => {
+  try {
+    const { search, limit = 20 } = req.query;
+    const query = { isActive: true };
+
+    if (search) {
+      query.username = { $regex: search, $options: 'i' };
+    }
+
+    const users = await User.find(query)
+      .select('username avatar bio role createdAt followers following')
+      .limit(Number(limit));
+
+    const formattedUsers = users.map(u => ({
+      id: u._id,
+      username: u.username,
+      avatar: u.avatar,
+      bio: u.bio,
+      role: u.role,
+      followersCount: u.followers?.length || 0,
+      followingCount: u.following?.length || 0
+    }));
+
+    res.json({ users: formattedUsers });
+  } catch (err) {
+    res.status(500).json({ error: 'Kullanıcılar aranırken hata oluştu.' });
+  }
+};
