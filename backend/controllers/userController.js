@@ -206,3 +206,23 @@ exports.toggleFollow = async (req, res) => {
     res.status(500).json({ error: 'İşlem başarısız.' });
   }
 };
+// GET /users/:userId/followers
+exports.getFollowers = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).populate('followers', 'username avatar bio');
+    if (!user) return res.status(404).json({ error: 'Kullanıcı bulunamadı.' });
+    res.json({ followers: user.followers });
+  } catch (err) {
+    res.status(500).json({ error: 'Takipçiler alınırken hata oluştu.' });
+  }
+};
+// GET /users/:userId/following
+exports.getFollowing = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).populate('following', 'username avatar bio');
+    if (!user) return res.status(404).json({ error: 'Kullanıcı bulunamadı.' });
+    res.json({ following: user.following });
+  } catch (err) {
+    res.status(500).json({ error: 'Takip edilenler alınırken hata oluştu.' });
+  }
+};
