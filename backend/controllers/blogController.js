@@ -214,6 +214,7 @@ exports.updateBlog = async (req, res) => {
       { path: 'category', select: 'name slug icon' }
     ]);
 
+    if (redisClient && redisClient.isReady) await redisClient.flushAll();
     res.json({ message: 'Blog yazısı güncellendi.', blog: updatedBlog });
   } catch (err) {
     if (err.kind === 'ObjectId') return res.status(404).json({ error: 'Blog yazısı bulunamadı.' });
@@ -239,6 +240,7 @@ exports.deleteBlog = async (req, res) => {
       Comment.deleteMany({ post: req.params.blogId })
     ]);
 
+    if (redisClient && redisClient.isReady) await redisClient.flushAll();
     res.json({ message: 'Blog yazısı ve tüm yorumları silindi.' });
   } catch (err) {
     if (err.kind === 'ObjectId') return res.status(404).json({ error: 'Blog yazısı bulunamadı.' });
