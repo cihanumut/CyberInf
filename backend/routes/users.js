@@ -17,4 +17,9 @@ router.delete('/:userId', protect, ctrl.deleteUser);
 router.get('/:userId/blogs', optionalAuth, ctrl.getUserBlogs);
 
 router.post('/:userId/follow', protect, ctrl.toggleFollow);
+
+// YENİ: Takipçi ve Takip Edilen Listeleri (Mobil Uygulama İçin)
+router.get('/:userId/followers', protect, ctrl.getFollowers);
+router.get('/:userId/following', protect, ctrl.getFollowing);
+
 module.exports = router;
