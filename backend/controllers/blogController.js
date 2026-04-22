@@ -4,10 +4,18 @@ const Comment = require('../models/Comment');
 const Category = require('../models/Category');
 const User = require('../models/User');
 const { createNotification } = require('./notificationController');
+const { redisClient } = require('../utils/redisClient');
+const { sendActivityLog } = require('../utils/rabbitClient');
 
 // GET /blogs
 exports.getBlogs = async (req, res) => {
   try {
+    const cacheKey = `blogs_${JSON.stringify(req.query)}_${req.user?.role || 'user'}`;
+    if (redisClient && redisClient.isReady) {
+        const cachedBlogs = await redisClient.get(cacheKey);
+        if (cachedBlogs) return res.json({ ...JSON.parse(cachedBlogs), cached: true });
+    }
+
     const { page = 1, limit = 10, search, tag, sort = '-createdAt', status } = req.query;
     
     const query = {};
@@ -32,7 +40,7 @@ exports.getBlogs = async (req, res) => {
       Post.countDocuments(query)
     ]);
 
-    res.json({
+    const responseData = {
       blogs,
       pagination: {
         currentPage: Number(page),
@@ -41,7 +49,13 @@ exports.getBlogs = async (req, res) => {
         hasNext: skip + blogs.length < total,
         hasPrev: Number(page) > 1
       }
-    });
+    };
+
+    if (redisClient && redisClient.isReady) {
+        await redisClient.setEx(cacheKey, 60 * 5, JSON.stringify(responseData));
+    }
+
+    res.json(responseData);
   } catch (err) {
     res.status(500).json({ error: 'Bloglar yüklenirken hata oluştu.' });
   }
@@ -107,6 +121,9 @@ exports.createBlog = async (req, res) => {
       { path: 'author', select: 'username avatar' },
       { path: 'category', select: 'name slug icon' }
     ]);
+
+    if (redisClient && redisClient.isReady) await redisClient.flushAll();
+    sendActivityLog('blog_created', req.user ? req.user.username : 'Unknown');
 
     res.status(201).json({
       message: allowedStatus === 'draft' ? 'Taslak kaydedildi.' : 'Blog yazınız inceleme için gönderildi.',

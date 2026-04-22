@@ -15,6 +15,9 @@ const categoryRoutes      = require('./routes/categories');
 const uploadRoutes        = require('./routes/upload');
 const notificationRoutes  = require('./routes/notifications');
 
+const { connectRedis } = require('./utils/redisClient');
+const { connectRabbitMQ } = require('./utils/rabbitClient');
+
 const app = express();
 app.set('trust proxy', 1);
 // ── Güvenlik ──────────────────────────────────
@@ -79,18 +82,24 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ── MongoDB + Start ───────────────────────────
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log('✅ MongoDB bağlantısı başarılı');
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`🚀 CyberBlog API → http://localhost:${PORT}/api`);
-    });
-  })
-  .catch(err => {
-    console.error('❌ MongoDB bağlantı hatası:', err);
-    process.exit(1);
-  });
+// ── External Services & Startup ─────────────────
+const startServer = async () => {
+    await connectRedis();
+    await connectRabbitMQ();
+
+    mongoose.connect(process.env.MONGODB_URI)
+      .then(() => {
+        console.log('✅ MongoDB bağlantısı başarılı');
+        const PORT = process.env.PORT || 5000;
+        app.listen(PORT, () => {
+          console.log(`🚀 CyberBlog API → https://api.cyberinf.com.tr/api`);
+        });
+      })
+      .catch(err => {
+        console.error('❌ MongoDB bağlantı hatası:', err);
+        process.exit(1);
+      });
+};
+startServer();
 
 module.exports = app;

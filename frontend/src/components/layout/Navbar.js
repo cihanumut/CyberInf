@@ -193,12 +193,59 @@ export default function Navbar() {
 
           {isAuthenticated ? (
             <>
-              <div className="mobile-user">
-                <div className="user-avatar">
-                  {user?.avatar ? <img src={user.avatar} alt={user.username} /> : <span>{user?.username?.[0]?.toUpperCase()}</span>}
+              <div className="mobile-user" style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div className="user-avatar">
+                    {user?.avatar ? <img src={user.avatar} alt={user.username} /> : <span>{user?.username?.[0]?.toUpperCase()}</span>}
+                  </div>
+                  <span style={{ marginLeft: '10px' }}>@{user?.username}</span>
                 </div>
-                @{user?.username}
+                <button className="notif-btn" onClick={handleNotifOpen} style={{ marginLeft: 'auto', position: 'relative' }}>
+                  🔔
+                  {unreadCount > 0 && (
+                    <span className="notif-badge">{unreadCount > 9 ? "9+" : unreadCount}</span>
+                  )}
+                </button>
               </div>
+
+              {notifOpen && (
+                <div className="notif-dropdown" style={{ position: 'relative', top: 0, right: 0, width: '100%', marginBottom: '1rem' }}>
+                  <div className="notif-header">
+                    <span>Bildirimler</span>
+                    {notifications.length > 0 && (
+                      <button className="notif-clear" onClick={async () => {
+                        await notificationService.markAllRead();
+                        setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+                        setUnreadCount(0);
+                      }}>Tümünü okundu say</button>
+                    )}
+                  </div>
+                  <div className="notif-list">
+                    {notifications.length === 0 ? (
+                      <div className="notif-empty">Bildirim yok</div>
+                    ) : (
+                      notifications.map((n) => (
+                        <div key={n._id} className={`notif-item ${!n.isRead ? "unread" : ""}`}
+                          onClick={() => {
+                            if (n.type === "new_follower" && n.sender?._id) {
+                              navigate(`/profile/${n.sender._id}`);
+                            } else if (n.post?.slug) {
+                              navigate(`/posts/${n.post.slug}`);
+                            }
+                            setNotifOpen(false);   
+                            setTimeout(() => setMobileOpen(false), 100); 
+                          }}>
+                          <span className="notif-icon">{getNotifIcon(n.type)}</span>
+                          <div className="notif-content">
+                            <p className="notif-message">{n.message}</p>
+                            <span className="notif-time">{new Date(n.createdAt).toLocaleDateString("tr-TR")}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
               <Link to="/posts/create" className="btn btn-primary">+ Yeni Yazı</Link>
               <Link to="/dashboard" className="btn btn-secondary">Dashboard</Link>
               <Link to="/profile" className="btn btn-secondary">Profil</Link>
