@@ -3,6 +3,9 @@ const router = express.Router();
 const ctrl = require('../controllers/userController');
 const { protect, optionalAuth } = require('../middleware/auth');
 
+// GET /users (Arama ve Listeleme)
+router.get('/', protect, ctrl.getUsers);
+
 // GET /users/:userId  🔒 (giriş gerekli — gereksinim #6)
 router.get('/:userId', protect, ctrl.getUser);
 
