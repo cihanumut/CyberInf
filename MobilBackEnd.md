@@ -2,8 +2,6 @@
 
 **REST API Adresi:** [api.yazmuh.com](https://api.yazmuh.com)
 
-Bu dokümanda, mobil uygulamanın REST API ile iletişimini sağlayan backend entegrasyon görevleri listelenmektedir. Her grup üyesi, kendisine atanan API endpoint'lerinin mobil uygulamadan çağrılması ve yönetilmesinden sorumludur.
-
 ---
 
 ## Grup Üyelerinin Mobil Backend Görevleri
