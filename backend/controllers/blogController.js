@@ -261,6 +261,17 @@ exports.toggleLike = async (req, res) => {
       blog.likes.pull(userId);
     } else {
       blog.likes.push(userId);
+      
+      // Bildirim: Yazı sahibi kendisi değilse bildirim gönder
+      if (blog.author.toString() !== userId.toString()) {
+        await createNotification({
+          recipient: blog.author,
+          sender: userId,
+          type: 'post_like',
+          message: `@${req.user.username} yazınızı beğendi: "${blog.title}"`,
+          post: blog._id
+        });
+      }
     }
 
     await blog.save({ validateBeforeSave: false });
