@@ -80,8 +80,23 @@ exports.getBlog = async (req, res) => {
 
     if (!blog) return res.status(404).json({ error: 'Blog yazısı bulunamadı.' });
 
-    const comments = await Comment.find({ post: blog._id, status: 'approved', parentComment: null })
+    const currentUserId = req.user ? req.user._id : null;
+    
+    // Onaylı yorumların hepsini (yanıtlar dahil) getir + kullanıcının kendi onay bekleyen yorumlarını getir
+    const commentQuery = {
+      post: blog._id,
+      $or: [
+        { status: 'approved' },
+        ...(currentUserId ? [{ author: currentUserId, status: 'pending' }] : [])
+      ]
+    };
+
+    const comments = await Comment.find(commentQuery)
       .populate('author', 'username avatar')
+      .populate({
+        path: 'parentComment',
+        populate: { path: 'author', select: 'username' }
+      })
       .sort('-createdAt');
 
     res.json({ blog, comments });
