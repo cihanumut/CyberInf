@@ -193,6 +193,17 @@ exports.toggleLike = async (req, res) => {
       comment.likes.pull(userId);
     } else {
       comment.likes.push(userId);
+
+      // Bildirim: Yorum sahibi kendisi değilse bildirim gönder
+      if (comment.author.toString() !== userId.toString()) {
+        await createNotification({
+          recipient: comment.author,
+          sender: userId,
+          type: 'comment_like',
+          message: `@${req.user.username} yorumunuzu beğendi.`,
+          post: comment.post
+        });
+      }
     }
 
     await comment.save({ validateBeforeSave: false });
