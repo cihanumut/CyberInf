@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Post = require('../models/Post');
+const { redisClient } = require('../utils/redisClient');
 
 // GET /users/:userId
 exports.getUser = async (req, res) => {
@@ -72,6 +73,11 @@ exports.updateUser = async (req, res) => {
       new: true,
       runValidators: true
     }).select('-refreshToken');
+
+    // Cache invalidation: Profil güncellendiğinde tüm blog listeleri önbellekten silinmeli
+    if (redisClient && redisClient.isReady) {
+      await redisClient.flushAll();
+    }
 
     res.json({
       message: 'Profil güncellendi.',
