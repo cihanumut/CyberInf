@@ -1,5 +1,6 @@
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
+const { createNotification } = require('./notificationController');
 
 // ──────────────────────────────────────────────
 // POST /blogs/:blogId/comments
@@ -31,6 +32,32 @@ exports.createComment = async (req, res) => {
     });
 
     await comment.populate('author', 'username avatar');
+
+    // Bildirimler
+    // 1. Yazı sahibine bildir (kendisi değilse)
+    if (blog.author.toString() !== req.user._id.toString()) {
+      await createNotification({
+        recipient: blog.author,
+        sender: req.user._id,
+        type: 'post_comment',
+        message: `@${req.user.username} yazınıza yorum yaptı: "${blog.title}"`,
+        post: blog._id
+      });
+    }
+
+    // 2. Eğer yanıtsa, üst yorum sahibine bildir
+    if (parentComment) {
+      const parent = await Comment.findById(parentComment);
+      if (parent && parent.author.toString() !== req.user._id.toString()) {
+        await createNotification({
+          recipient: parent.author,
+          sender: req.user._id,
+          type: 'comment_reply',
+          message: `@${req.user.username} yorumunuza yanıt verdi.`,
+          post: blog._id
+        });
+      }
+    }
 
     res.status(201).json({
       message: 'Yorumunuz inceleme için gönderildi.',
