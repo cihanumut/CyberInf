@@ -15,7 +15,7 @@
 ## Bölüm 1: Genel Mobil Backend Prensipleri
 
 ### 1. HTTP Client Yapılandırması
-- **Base URL:** `https://api.cyberinf.com.tr/api`
+- **Base URL:** `https://api.cyberinf.com.tr/health`
 - **Timeout:** Request timeout 30 saniye, connect timeout 10 saniye.
 - **Headers:** 
   - `Content-Type: application/json`
