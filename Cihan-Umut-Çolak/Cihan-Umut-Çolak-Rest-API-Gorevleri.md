@@ -30,7 +30,7 @@
 - **Request Body:**
   ```json
   {
-    "email": "kullanici@example.com",
+    "email": "kullanicii@example.com",
     "password": "Guvenli123!"
   }
   ```
