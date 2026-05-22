@@ -90,7 +90,7 @@ const startServer = async () => {
       console.log('✅ MongoDB bağlantısı başarılı');
       const PORT = process.env.PORT || 5000;
       app.listen(PORT, () => {
-        console.log(`🚀 CyberBlog API → https://cyberinf.onrender.com/api`);
+        console.log(`🚀 CyberBlog API → https://api.cyberinf.com.tr/api`);
       });
     })
     .catch(err => {

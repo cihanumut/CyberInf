@@ -1,5 +1,5 @@
 # CyberInf REST API Metotları
-**Base URL:** `https://cyberinf.onrender.com/api`  
+**Base URL:** `https://api.cyberinf.com.tr/api`  
 **API Test Videosu:** [Link buraya eklenecek](https://www.youtube.com/watch?v=siPAm-LDcbU)
 
 ---

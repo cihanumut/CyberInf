@@ -1,6 +1,6 @@
 # Mobil Backend (REST API Bağlantısı) Görev Dağılımı
 
-**REST API Adresi:** [api.cyberinf.com](https://cyberinf.onrender.com/api/health)
+**REST API Adresi:** [api.cyberinf.com](https://api.cyberinf.com.tr/api/health)
 
 ---
 
@@ -15,7 +15,7 @@
 ## Bölüm 1: Genel Mobil Backend Prensipleri
 
 ### 1. HTTP Client Yapılandırması
-- **Base URL:** `https://cyberinf.onrender.com/health`
+- **Base URL:** `https://api.cyberinf.com.tr/health`
 - **Timeout:** Request timeout 30 saniye, connect timeout 10 saniye.
 - **Headers:** 
   - `Content-Type: application/json`

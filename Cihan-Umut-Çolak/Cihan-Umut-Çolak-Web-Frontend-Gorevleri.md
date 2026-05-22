@@ -558,7 +558,7 @@
 - **UI Bileşenleri:**
   - Görünür UI yok
 - **Teknik Detaylar:**
-  - `https://cyberinf.onrender.com/api/health` direkt tarayıcıda açılabilir
+  - `https://api.cyberinf.com.tr/api/health` direkt tarayıcıda açılabilir
 
 ---
 

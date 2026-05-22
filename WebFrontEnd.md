@@ -559,7 +559,7 @@
 - **UI Bileşenleri:**
   - Görünür UI yok
 - **Teknik Detaylar:**
-  - `https://cyberinf.onrender.com/api/health` direkt tarayıcıda açılabilir
+  - `https://api.cyberinf.com.tr/api/health` direkt tarayıcıda açılabilir
 
 ---
 
@@ -670,7 +670,7 @@
 
 ### 9. API Entegrasyonu
 - **HTTP Client:** Axios
-- **Base URL:** `https://cyberinf.onrender.com/api`
+- **Base URL:** `https://api.cyberinf.com.tr/api`
 - **Request Interceptor:** Her istekte `Authorization: Bearer {token}` header'ı otomatik eklenir
 - **Response Interceptor:** 401 gelince refresh token ile otomatik yenileme, başarısız olursa `/login`'e yönlendirme
 - **Error Handling:** try/catch bloklarında toast notification ile kullanıcıya gösterilir
