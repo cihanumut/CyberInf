@@ -1,11 +1,11 @@
 {
   "info": {
     "name": "CyberInf API",
-    "description": "CyberInf Blog API - https://api.cyberinf.com.tr/api",
+    "description": "CyberInf Blog API - https://cyberinf.onrender.com/api",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "https://api.cyberinf.com.tr/api" },
+    { "key": "baseUrl", "value": "https://cyberinf.onrender.com/api" },
     { "key": "accessToken", "value": "" },
     { "key": "refreshToken", "value": "" },
     { "key": "userId", "value": "" },
